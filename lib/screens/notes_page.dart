@@ -30,6 +30,31 @@ class _NotesPageState extends State<NotesPage> {
     await NoteDatabase.instance.delete(id);
     _refreshNotes();
   }
+  Future<void> _deleteNoteDialog(NoteModel note) async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Delete Note"),
+        content: Text("Are you sure you want to delete '${note.title}'?"),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false), // cancel
+            child: const Text("Cancel"),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true), // confirm
+            child: const Text("Delete", style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm == true) {
+      await NoteDatabase.instance.delete(note.id!);
+      _refreshNotes();
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -77,10 +102,11 @@ class _NotesPageState extends State<NotesPage> {
                             _refreshNotes();
                           },
                         ),
-                        IconButton(
+                       IconButton(
                           icon: const Icon(Icons.delete, color: Colors.red),
-                          onPressed: () => _deleteNote(note.id!),
+                          onPressed: () => _deleteNoteDialog(note),
                         ),
+
                       ],
                     ),
                     onTap: () {
@@ -111,3 +137,7 @@ class _NotesPageState extends State<NotesPage> {
     );
   }
 }
+
+
+
+
