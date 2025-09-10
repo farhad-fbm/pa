@@ -4,6 +4,10 @@ import 'package:pa/database/note_model.dart';
 import 'package:pa/database/notes_database.dart';
 import 'package:pa/screens/view_note_page.dart';
 import 'edit_note_page.dart';
+// import 'package:pa/constants/app_styles.dart';
+
+
+
 
 class NotesPage extends StatefulWidget {
   const NotesPage({super.key});
@@ -216,5 +220,5 @@ class AppStyles {
 
   static const snippetStyle = TextStyle(fontSize: 15, color: Colors.grey);
 
-  static const dateStyle = TextStyle(fontSize: 13, color: Colors.grey);
+  static const dateStyle = TextStyle(fontSize: 13, color: Colors.black);
 }
