@@ -14,6 +14,7 @@ class NoteDatabase {
     _database = await _initDB('notes.db');
     return _database!;
   }
+
   // Initialize DB
   Future<sqflite.Database> _initDB(String filePath) async {
     final dbPath = await sqflite.getDatabasesPath();
@@ -41,9 +42,9 @@ class NoteDatabase {
   }
 
   // CREATE table
-  Future<int> create(NoteModel note) async {
+  Future<int> create(NoteModel noteModel) async {
     final db = await instance.database;
-    return await db.insert('notes', note.toMap());
+    return await db.insert('notes', noteModel.toMap());
   }
 
   // READ (single)
@@ -56,7 +57,7 @@ class NoteDatabase {
       whereArgs: [id],
     );
     if (maps.isNotEmpty) {
-      return NoteModel.fromMap(maps.first);
+      return NoteModel.fromMap(maps.first); // return the first result
     } else {
       return null;
     }
