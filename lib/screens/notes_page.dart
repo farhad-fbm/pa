@@ -26,7 +26,6 @@ class _NotesPageState extends State<NotesPage> {
     });
   }
 
-
   Future<bool> _deleteNoteDialog(NoteModel note) async {
     final confirm = await showDialog<bool>(
       context: context,
@@ -76,41 +75,78 @@ class _NotesPageState extends State<NotesPage> {
                     ? "${note.description.substring(0, 50)}..."
                     : note.description;
 
-                return Card(
-                  margin: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 6,
+                return Dismissible(
+                  key: Key(note.id.toString()),
+
+                  // Background for left -> right swipe (Edit)
+                  background: Container(
+                    color: Colors.blue,
+                    alignment: Alignment.centerLeft,
+                    padding: const EdgeInsets.only(left: 20),
+                    child: const Icon(Icons.edit, color: Colors.white),
                   ),
-                  child: Dismissible(
-                    key: Key(note.id.toString()),
-                    background: Container(color: Colors.red),
-                    confirmDismiss: (_) async {
-                      return await _deleteNoteDialog(note); // true/false
-                    },
+
+                  // Background for right -> left swipe (Delete)
+                  secondaryBackground: Container(
+                    color: Colors.red,
+                    alignment: Alignment.centerRight,
+                    padding: const EdgeInsets.only(right: 20),
+                    child: const Icon(Icons.delete, color: Colors.white),
+                  ),
+
+                  // Handle swipe
+                  confirmDismiss: (direction) async {
+                    if (direction == DismissDirection.endToStart) {
+                      // Right -> left swipe = delete
+                      final confirm = await showDialog<bool>(
+                        context: context,
+                        builder: (_) => AlertDialog(
+                          title: const Text("Delete Note"),
+                          content: Text(
+                            "Are you sure you want to delete '${note.title}'?",
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context, false),
+                              child: const Text("Cancel"),
+                            ),
+                            TextButton(
+                              onPressed: () => Navigator.pop(context, true),
+                              child: const Text(
+                                "Delete",
+                                style: TextStyle(color: Colors.red),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                      if (confirm == true) {
+                        await NoteDatabase.instance.delete(note.id!);
+                        _refreshNotes();
+                      }
+                      return confirm ?? false;
+                    } else if (direction == DismissDirection.startToEnd) {
+                      // Left -> right swipe = edit
+                      await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => EditNotePage(note: note),
+                        ),
+                      );
+                      _refreshNotes();
+                      return false; // don't dismiss the item
+                    }
+                    return false;
+                  },
+
+                  child: Card(
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
                     child: ListTile(
                       title: Text(note.title),
                       subtitle: Text(snippet),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          IconButton(
-                            icon: const Icon(Icons.edit, color: Colors.blue),
-                            onPressed: () async {
-                              await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => EditNotePage(note: note),
-                                ),
-                              );
-                              _refreshNotes();
-                            },
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.delete, color: Colors.red),
-                            onPressed: () => _deleteNoteDialog(note),
-                          ),
-                        ],
-                      ),
                       onTap: () {
                         Navigator.push(
                           context,
