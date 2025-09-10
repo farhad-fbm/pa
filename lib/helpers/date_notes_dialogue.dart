@@ -28,3 +28,4 @@ Future<bool> _deleteNoteDialog(NoteModel note, context, _refreshNotes ) async {
   }
   return confirm ?? false;
 }
+// okay
