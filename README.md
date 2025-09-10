@@ -10,7 +10,6 @@ A Flutter notes app with create, edit, view, and delete functionalities. Support
 - Swipe left → right to edit, swipe right → left to delete.  
 - Confirm deletion with a popup dialog.  
 - Notes stored locally using SQLite.  
-- Date displayed next to the note title.  
 - Clean, modular UI with separate widgets and styles.  
 
 ---
