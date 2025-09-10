@@ -50,7 +50,8 @@ class ViewNotePage extends StatelessWidget {
               child: SingleChildScrollView(
                 child: Text(
                   note.description,
-                  style: const TextStyle(fontSize: 18),
+                  style: const TextStyle(fontSize: 18, height: 1.5),
+                   textAlign: TextAlign.start,
                 ),
               ),
             ),

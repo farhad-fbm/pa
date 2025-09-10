@@ -80,6 +80,10 @@ class _EditNotePageState extends State<EditNotePage> {
               TextFormField(
                 controller: _descController,
                 decoration: const InputDecoration(labelText: "Description"),
+                keyboardType: TextInputType.multiline,
+                minLines: 5, // start with 5 lines
+                maxLines: null, // expand as needed
+                textAlignVertical: TextAlignVertical.top,
                 validator: (val) =>
                     val == null || val.isEmpty ? "Enter description" : null,
               ),
