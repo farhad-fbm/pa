@@ -26,11 +26,8 @@ class _NotesPageState extends State<NotesPage> {
     });
   }
 
-  Future<void> _deleteNote(int id) async {
-    await NoteDatabase.instance.delete(id);
-    _refreshNotes();
-  }
-  Future<void> _deleteNoteDialog(NoteModel note) async {
+
+  Future<bool> _deleteNoteDialog(NoteModel note) async {
     final confirm = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
@@ -53,8 +50,8 @@ class _NotesPageState extends State<NotesPage> {
       await NoteDatabase.instance.delete(note.id!);
       _refreshNotes();
     }
+    return confirm ?? false;
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -84,39 +81,45 @@ class _NotesPageState extends State<NotesPage> {
                     horizontal: 12,
                     vertical: 6,
                   ),
-                  child: ListTile(
-                    title: Text(note.title),
-                    subtitle: Text(snippet),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.edit, color: Colors.blue),
-                          onPressed: () async {
-                            await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => EditNotePage(note: note),
-                              ),
-                            );
-                            _refreshNotes();
-                          },
-                        ),
-                       IconButton(
-                          icon: const Icon(Icons.delete, color: Colors.red),
-                          onPressed: () => _deleteNoteDialog(note),
-                        ),
-
-                      ],
-                    ),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => ViewNotePage(note: note),
-                        ),
-                      );
+                  child: Dismissible(
+                    key: Key(note.id.toString()),
+                    background: Container(color: Colors.red),
+                    confirmDismiss: (_) async {
+                      return await _deleteNoteDialog(note); // true/false
                     },
+                    child: ListTile(
+                      title: Text(note.title),
+                      subtitle: Text(snippet),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.edit, color: Colors.blue),
+                            onPressed: () async {
+                              await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => EditNotePage(note: note),
+                                ),
+                              );
+                              _refreshNotes();
+                            },
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.delete, color: Colors.red),
+                            onPressed: () => _deleteNoteDialog(note),
+                          ),
+                        ],
+                      ),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => ViewNotePage(note: note),
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 );
               },
@@ -137,7 +140,3 @@ class _NotesPageState extends State<NotesPage> {
     );
   }
 }
-
-
-
-
