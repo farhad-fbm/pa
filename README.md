@@ -16,12 +16,7 @@ A Flutter notes app with create, edit, view, and delete functionalities. Support
 
 ## Project Setup
 
-### Prerequisites
-
 - [Flutter SDK](https://docs.flutter.dev/get-started/install) >= 3.9.0  
-- Android Studio or Xcode (for iOS development)  
-- Dart >= 3.9.0  
-- Device or emulator for testing  
 
 ### Clone Repository
 
